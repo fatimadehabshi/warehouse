@@ -46,16 +46,22 @@ class ProductController extends Controller
             ->where('quantity', '<=', 5)
             ->count();
 
-        $todayAddedProducts = $warehouse->products()
+        $todayIn = $warehouse->stockMovements()
+            ->where('type', 'in')
             ->whereDate('created_at', now()->toDateString())
-            ->count();
+            ->sum('quantity');
+
+        $todayOut = $warehouse->stockMovements()
+            ->where('type', 'out')
+            ->whereDate('created_at', now()->toDateString())
+            ->sum('quantity');
 
         return response()->json([
             'stats' => [
                 'total_products' => $totalProducts,
                 'low_stock_products' => $lowStockProducts,
-                'today_added_products' => $todayAddedProducts,
-                'today_removed_products' => 0,
+                'today_added_products' => $todayIn,
+                'today_removed_products' => $todayOut,
             ],
         ]);
     }

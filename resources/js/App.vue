@@ -8,13 +8,15 @@ import AboutPage from './components/AboutPage.vue'
 import ContactPage from './components/ContactPage.vue'
 import ProductsPage from './components/ProductsPage.vue'
 import AuthPage from './components/AuthPage.vue'
+import StockMovementsPage from './components/StockMovementsPage.vue'
 
 const currentPage = ref('home')
 const isLoggedIn = ref(false)
 const currentUser = ref(null)
 
 const goToPage = (page) => {
-  if (page === 'products' && !isLoggedIn.value) {
+  const protectedPages = ['products', 'stock-movements']
+  if (protectedPages.includes(page) && !isLoggedIn.value) {
     currentPage.value = 'auth'
     return
   }
@@ -25,7 +27,7 @@ const goToPage = (page) => {
 const handleAuthSuccess = (user) => {
   isLoggedIn.value = true
   currentUser.value = user
-  currentPage.value = 'products'
+  currentPage.value = 'home'
 }
 
 const logout = async () => {
@@ -62,6 +64,10 @@ const logout = async () => {
 
           <button class="hover:text-[#219EBC]" @click="goToPage('products')">
             لیست کالاها
+          </button>
+
+          <button class="hover:text-[#219EBC]" @click="goToPage('stock-movements')">
+            رویدادهای انبار 
           </button>
 
           <button class="hover:text-[#219EBC]" @click="goToPage('about')">درباره ما</button>
@@ -101,6 +107,8 @@ const logout = async () => {
     />
 
     <ProductsPage v-else-if="currentPage === 'products' && isLoggedIn" />
+
+    <StockMovementsPage v-else-if="currentPage === 'stock-movements' && isLoggedIn" />
 
     <section
       v-else-if="currentPage === 'products' && !isLoggedIn"
