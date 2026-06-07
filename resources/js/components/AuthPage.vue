@@ -50,6 +50,7 @@ const handleSubmit = async () => {
           name: form.name,
           email: form.email,
           password: form.password,
+          warehouse_name: form.warehouseName,
         }
 
   try {

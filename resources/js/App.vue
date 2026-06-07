@@ -97,6 +97,7 @@ const logout = async () => {
       v-if="currentPage === 'home'"
       :go-to-page="goToPage"
       :logo-url="logoUrl"
+      :is-logged-in="isLoggedIn"
     />
 
     <ProductsPage v-else-if="currentPage === 'products' && isLoggedIn" />

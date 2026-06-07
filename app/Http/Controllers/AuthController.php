@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,7 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
+            'warehouse_name' => ['required', 'string', 'max:255'],
         ], [
             'name.required' => 'نام و نام خانوادگی الزامی است.',
             'email.required' => 'ایمیل الزامی است.',
@@ -23,6 +25,7 @@ class AuthController extends Controller
             'email.unique' => 'این ایمیل قبلاً ثبت شده است.',
             'password.required' => 'رمز عبور الزامی است.',
             'password.min' => 'رمز عبور باید حداقل ۶ کاراکتر باشد.',
+            'warehouse_name.required' => 'نام انبار الزامی است.',
         ]);
 
         if ($validator->fails()) {
@@ -38,6 +41,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $warehouse = Warehouse::create([
+            'user_id' => $user->id,
+            'name' => $request->warehouse_name,
+        ]);
+
         Auth::login($user);
 
         return response()->json([
@@ -46,10 +54,13 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'warehouse' => [
+                    'id' => $warehouse->id,
+                    'name' => $warehouse->name,
+                ],
             ],
         ]);
     }
-
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [

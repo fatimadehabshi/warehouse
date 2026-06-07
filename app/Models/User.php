@@ -29,4 +29,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function warehouse()
+    {
+        return $this->hasOne(\App\Models\Warehouse::class);
+    }
 }
